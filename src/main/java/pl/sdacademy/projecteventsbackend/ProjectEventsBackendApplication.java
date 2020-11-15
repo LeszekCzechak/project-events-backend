@@ -5,8 +5,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class ProjectEventsBackendApplication {
+    public void b() {
+        // treść metody b
+    }
+
     //test
     public static void main(String[] args) {
+        String y = "abc";
         SpringApplication.run(ProjectEventsBackendApplication.class, args);
     }
 

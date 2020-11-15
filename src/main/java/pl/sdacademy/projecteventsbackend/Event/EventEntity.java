@@ -12,6 +12,7 @@ public class EventEntity {
     private String name;
     private String description;
     @ManyToOne
+    @JoinColumn(name = "address_id")
     private AddressEntity address;
 
 

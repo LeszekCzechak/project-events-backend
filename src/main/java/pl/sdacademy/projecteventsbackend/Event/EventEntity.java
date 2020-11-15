@@ -2,10 +2,7 @@ package pl.sdacademy.projecteventsbackend.Event;
 
 import pl.sdacademy.projecteventsbackend.User.UserEntity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class EventEntity {
@@ -14,10 +11,11 @@ public class EventEntity {
     private Long id;
     private String name;
     private String description;
-    private String address;
+    @ManyToOne
+    private AddressEntity address;
 
 
-    public EventEntity(String name, String description, String address) {
+    public EventEntity(String name, String description, AddressEntity address) {
         this.name = name;
         this.description = description;
         this.address = address;
@@ -25,6 +23,7 @@ public class EventEntity {
 
     public EventEntity() {
     }
+
 
     public Long getId() {
         return id;
@@ -38,7 +37,7 @@ public class EventEntity {
         return description;
     }
 
-    public String getAddress() {
+    public AddressEntity getAddress() {
         return address;
     }
 
@@ -50,7 +49,7 @@ public class EventEntity {
         this.description = description;
     }
 
-    public void setAddress(String address) {
+    public void setAddress(AddressEntity address) {
         this.address = address;
     }
 }

@@ -1,9 +1,7 @@
 package pl.sdacademy.projecteventsbackend.Event;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class AddressEntity {
@@ -14,6 +12,7 @@ public class AddressEntity {
     private String street;
     private String city;
     private int zipcode;
+
 
     public AddressEntity() {
     }

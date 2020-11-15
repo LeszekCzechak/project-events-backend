@@ -6,4 +6,5 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Repository
 public interface EventRepository extends JpaRepository<EventEntity, Long> {
+    EventEntity findByName(String name);
 }

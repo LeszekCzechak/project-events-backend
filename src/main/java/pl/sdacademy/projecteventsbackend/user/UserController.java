@@ -1,11 +1,11 @@
-package pl.sdacademy.projecteventsbackend.User;
+package pl.sdacademy.projecteventsbackend.user;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.sdacademy.projecteventsbackend.User.dto.EditUserRequest;
-import pl.sdacademy.projecteventsbackend.User.dto.RegisterUserRequest;
-import pl.sdacademy.projecteventsbackend.User.dto.UserResponse;
+import pl.sdacademy.projecteventsbackend.user.dto.EditUserRequest;
+import pl.sdacademy.projecteventsbackend.user.dto.RegisterUserRequest;
+import pl.sdacademy.projecteventsbackend.user.dto.UserResponse;
 
 @RestController
 @RequestMapping("/user")

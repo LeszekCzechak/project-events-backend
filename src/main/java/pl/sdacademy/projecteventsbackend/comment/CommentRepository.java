@@ -1,4 +1,4 @@
-package pl.sdacademy.projecteventsbackend.Comment;
+package pl.sdacademy.projecteventsbackend.comment;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

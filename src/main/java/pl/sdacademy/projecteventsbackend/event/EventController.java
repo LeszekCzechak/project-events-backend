@@ -1,4 +1,4 @@
-package pl.sdacademy.projecteventsbackend.Event;
+package pl.sdacademy.projecteventsbackend.event;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

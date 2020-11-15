@@ -1,4 +1,4 @@
-package pl.sdacademy.projecteventsbackend.Comment;
+package pl.sdacademy.projecteventsbackend.comment;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

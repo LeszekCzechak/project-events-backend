@@ -1,4 +1,4 @@
-package pl.sdacademy.projecteventsbackend.User.dto;
+package pl.sdacademy.projecteventsbackend.user.dto;
 
 public class RegisterUserRequest {
 

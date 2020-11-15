@@ -1,4 +1,4 @@
-package pl.sdacademy.projecteventsbackend.Event;
+package pl.sdacademy.projecteventsbackend.event;
 
 import javax.persistence.*;
 
@@ -10,7 +10,7 @@ public class EventEntity {
     private String name;
     private String description;
     @ManyToOne
-    @JoinColumn(name = "address_id")
+//    @JoinColumn(name = "address_id")
     private AddressEntity address;
 
 

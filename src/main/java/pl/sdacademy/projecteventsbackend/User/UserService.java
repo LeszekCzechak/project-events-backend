@@ -1,6 +1,7 @@
 package pl.sdacademy.projecteventsbackend.User;
 
 import org.springframework.stereotype.Service;
+import pl.sdacademy.projecteventsbackend.User.dto.EditUserRequest;
 import pl.sdacademy.projecteventsbackend.User.dto.RegisterUserRequest;
 import pl.sdacademy.projecteventsbackend.User.dto.UserResponse;
 
@@ -14,19 +15,29 @@ public class UserService {
     }
 
     public UserResponse registerUser(RegisterUserRequest newUser) {
-        UserEntity userEntity=new UserEntity();
+        UserEntity userEntity = new UserEntity();
         userEntity.setUsername(newUser.getName());
         userEntity.setPassword(newUser.getPassword());
         userEntity.setMail(newUser.getMail());
 
         userRepository.save(userEntity);
 
-        UserResponse response= new UserResponse(userEntity.getUsername(), userEntity.getMail());
+        UserResponse response = new UserResponse(userEntity.getUsername(), userEntity.getMail());
         return response;
     }
 
     public UserResponse getUserById(long userId) {
         UserEntity userEntity = userRepository.getOne(userId);
         return new UserResponse(userEntity.getUsername(), userEntity.getMail());
+    }
+
+    public UserResponse updateUserByUserId(long userId, EditUserRequest editedData) {
+        UserEntity userEntity = userRepository.getOne(userId);
+        userEntity.setUsername(editedData.getName());
+        userEntity.setMail(editedData.getMail());
+        userRepository.save(userEntity);
+
+        UserResponse response = new UserResponse(userEntity.getUsername(), userEntity.getMail());
+        return response;
     }
 }

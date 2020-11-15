@@ -3,6 +3,7 @@ package pl.sdacademy.projecteventsbackend.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.sdacademy.projecteventsbackend.User.dto.EditUserRequest;
 import pl.sdacademy.projecteventsbackend.User.dto.RegisterUserRequest;
 import pl.sdacademy.projecteventsbackend.User.dto.UserResponse;
 
@@ -24,7 +25,13 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponse> getUserById(@PathVariable long userId) {
+    public ResponseEntity<UserResponse> getUserById(@PathVariable("id") long userId) {
         return ResponseEntity.ok(userService.getUserById(userId));
+    }
+
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public UserResponse editUser(@PathVariable("id") long userId, @RequestBody EditUserRequest editedData){
+        return userService.updateUserByUserId(userId, editedData);
     }
 }

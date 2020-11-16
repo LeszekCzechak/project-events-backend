@@ -1,7 +1,5 @@
 package pl.sdacademy.projecteventsbackend.Event;
 
-import pl.sdacademy.projecteventsbackend.User.UserEntity;
-
 import javax.persistence.*;
 
 @Entity

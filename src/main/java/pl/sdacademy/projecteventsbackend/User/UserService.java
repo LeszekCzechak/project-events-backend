@@ -24,4 +24,9 @@ public class UserService {
         UserResponse response= new UserResponse(userEntity.getUsername(), userEntity.getMail());
         return response;
     }
+
+    public UserResponse getUserById(long userId) {
+        UserEntity userEntity = userRepository.getOne(userId);
+        return new UserResponse(userEntity.getUsername(), userEntity.getMail());
+    }
 }

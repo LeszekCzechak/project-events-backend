@@ -1,5 +1,6 @@
 package pl.sdacademy.projecteventsbackend.user;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -35,31 +36,43 @@ public class UserService implements UserDetailsService {
         userEntity.setEnabled(true);
         userEntity.setRoles(Collections.singleton(UserRole.USER));
         userEntity.setUpdatedOn(LocalDateTime.now());
+        userEntity.setDateOfBirth(newUser.getDateOfBirth());
 
         userRepository.save(userEntity);
 
-        UserResponse response = new UserResponse(userEntity.getUsername(), userEntity.getMail());
+        UserResponse response = new UserResponse(userEntity.getId(), userEntity.getUsername(), userEntity.getMail(), userEntity.getDateOfBirth());
         return response;
     }
 
     public UserResponse getUserById(long userId) {
-        UserEntity userEntity = userRepository.getOne(userId);
-        return new UserResponse(userEntity.getUsername(), userEntity.getMail());
+        UserEntity userEntity = userRepository.findById(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return new UserResponse(userEntity.getId(), userEntity.getUsername(), userEntity.getMail(), userEntity.getDateOfBirth());
     }
 
     public UserResponse updateUserByUserId(long userId, EditUserRequest editedData) {
         UserEntity userEntity = userRepository.getOne(userId);
         userEntity.setUsername(editedData.getName());
         userEntity.setMail(editedData.getMail());
+        userEntity.setDateOfBirth(editedData.getDateOfBirth());
         userRepository.save(userEntity);
 
-        UserResponse response = new UserResponse(userEntity.getUsername(), userEntity.getMail());
+        UserResponse response = new UserResponse(userEntity.getId(), userEntity.getUsername(), userEntity.getMail(), userEntity.getDateOfBirth());
         return response;
     }
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-            return userRepository.getUserEntityByUsername(s)
-                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return userRepository.getUserEntityByUsername(s)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
+
+    public HttpStatus deleteUserById(long userId) {
+        UserEntity userEntity = userRepository.findById(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        userEntity.setEnabled(false);
+        userEntity.setUpdatedOn(LocalDateTime.now());
+        userRepository.save(userEntity);
+        return HttpStatus.OK;
     }
 }

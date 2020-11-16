@@ -34,4 +34,10 @@ public class UserController {
     public UserResponse editUser(@PathVariable("id") long userId, @RequestBody EditUserRequest editedData){
         return userService.updateUserByUserId(userId, editedData);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable ("id") long userId){
+        HttpStatus httpStatus = userService.deleteUserById(userId);
+        return new ResponseEntity<>(httpStatus);
+    }
 }

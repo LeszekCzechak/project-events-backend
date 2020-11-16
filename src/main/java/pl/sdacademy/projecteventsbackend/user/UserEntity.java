@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
@@ -39,21 +40,26 @@ public class UserEntity implements UserDetails {
     @ElementCollection(targetClass = UserRole.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "roles")
     @Column
-    private Set<UserRole> roles= new HashSet<>();
+    private Set<UserRole> roles = new HashSet<>();
+    @Column
     private LocalDateTime createdUserDate;
+    @Column
     private LocalDateTime updatedOn;
+    @Column
+    private LocalDate dateOfBirth;
 
 
     public UserEntity() {
     }
 
-    public UserEntity(String username, String password, String mail) {
+    public UserEntity(String username, String password, String mail, LocalDate dateOfBirth) {
         this.username = username;
         this.password = password;
         this.mail = mail;
+        this.dateOfBirth=dateOfBirth;
     }
 
-    public UserEntity(Long id, @NotBlank(message = "This field must not be empty") String username, @NotBlank(message = "This field must not be empty") String password, @Email String mail, Boolean isAccountNonExpired, Boolean isAccountNonLocked, Boolean isCredentialsNonExpired, Boolean isEnabled, Set<UserRole> roles) {
+    public UserEntity(Long id, @NotBlank(message = "This field must not be empty") String username, @NotBlank(message = "This field must not be empty") String password, @Email String mail, Boolean isAccountNonExpired, Boolean isAccountNonLocked, Boolean isCredentialsNonExpired, Boolean isEnabled, Set<UserRole> roles, LocalDateTime createdUserDate, LocalDateTime updatedOn, LocalDate dateOfBirth) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -63,6 +69,9 @@ public class UserEntity implements UserDetails {
         this.isCredentialsNonExpired = isCredentialsNonExpired;
         this.isEnabled = isEnabled;
         this.roles = roles;
+        this.createdUserDate = createdUserDate;
+        this.updatedOn = updatedOn;
+        this.dateOfBirth = dateOfBirth;
     }
 
     @Override
@@ -178,5 +187,13 @@ public class UserEntity implements UserDetails {
 
     public LocalDateTime getUpdatedOn() {
         return updatedOn;
+    }
+
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(LocalDate dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
     }
 }

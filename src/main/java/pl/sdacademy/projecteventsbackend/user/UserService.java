@@ -6,9 +6,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.sdacademy.projecteventsbackend.user.dto.EditUserRequest;
 import pl.sdacademy.projecteventsbackend.user.dto.RegisterUserRequest;
 import pl.sdacademy.projecteventsbackend.user.dto.UserResponse;
+import pl.sdacademy.projecteventsbackend.user.model.UserEntity;
+import pl.sdacademy.projecteventsbackend.user.model.UserRole;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -50,11 +53,13 @@ public class UserService implements UserDetailsService {
         return new UserResponse(userEntity.getId(), userEntity.getUsername(), userEntity.getMail(), userEntity.getDateOfBirth());
     }
 
+    @Transactional
     public UserResponse updateUserByUserId(long userId, EditUserRequest editedData) {
         UserEntity userEntity = userRepository.getOne(userId);
         userEntity.setUsername(editedData.getName());
         userEntity.setMail(editedData.getMail());
         userEntity.setDateOfBirth(editedData.getDateOfBirth());
+        userEntity.setUpdatedOn(LocalDateTime.now());
         userRepository.save(userEntity);
 
         UserResponse response = new UserResponse(userEntity.getId(), userEntity.getUsername(), userEntity.getMail(), userEntity.getDateOfBirth());
@@ -63,7 +68,7 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        return userRepository.getUserEntityByUsername(s)
+        return userRepository.findByUsername(s)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
@@ -71,6 +76,9 @@ public class UserService implements UserDetailsService {
         UserEntity userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         userEntity.setEnabled(false);
+        userEntity.setAccountNonExpired(false);
+        userEntity.setAccountNonLocked(false);
+        userEntity.setCredentialsNonExpired(false);
         userEntity.setUpdatedOn(LocalDateTime.now());
         userRepository.save(userEntity);
         return HttpStatus.OK;

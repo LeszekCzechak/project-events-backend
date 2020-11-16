@@ -1,4 +1,4 @@
-package pl.sdacademy.projecteventsbackend.user;
+package pl.sdacademy.projecteventsbackend.user.model;
 
 import org.springframework.security.core.GrantedAuthority;
 

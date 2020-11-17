@@ -1,6 +1,7 @@
 package pl.sdacademy.projecteventsbackend.Event;
 
 import org.springframework.stereotype.Service;
+import pl.sdacademy.projecteventsbackend.exception.EventNameNotFoundException;
 
 import java.util.List;
 
@@ -12,11 +13,17 @@ public class EventService {
         this.eventRepository = eventRepository;
     }
 
-    public List<EventEntity> getAllEvents (){
+    public List<EventEntity> getAllEvents() {
         return eventRepository.findAll();
     }
-    public EventEntity getEvent (String name){
-        return eventRepository.findByName(name);
+
+    public EventEntity getEventByName(String name) {
+        return eventRepository.findByName(name).orElseThrow(
+                EventNameNotFoundException::new
+        );
     }
 
+    public EventEntity addNewEvent(EventEntity newEvent) {
+        return eventRepository.save(newEvent);
+    }
 }

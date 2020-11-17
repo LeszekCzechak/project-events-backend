@@ -1,7 +1,6 @@
-package pl.sdacademy.projecteventsbackend.Event;
+package pl.sdacademy.projecteventsbackend.event;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 public class AddressEntity {

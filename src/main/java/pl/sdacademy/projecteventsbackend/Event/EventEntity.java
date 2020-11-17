@@ -1,5 +1,7 @@
 package pl.sdacademy.projecteventsbackend.Event;
 
+import pl.sdacademy.projecteventsbackend.User.UserEntity;
+
 import javax.persistence.*;
 
 @Entity
@@ -9,9 +11,14 @@ public class EventEntity {
     private Long id;
     private String name;
     private String description;
+
     @ManyToOne
     @JoinColumn(name = "address_id")
     private AddressEntity address;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private UserEntity organizer;
 
 
     public EventEntity(String name, String description, AddressEntity address) {
@@ -50,5 +57,9 @@ public class EventEntity {
 
     public void setAddress(AddressEntity address) {
         this.address = address;
+    }
+
+    public void setOrganizer(UserEntity organizerId) {
+        this.organizer = organizerId;
     }
 }

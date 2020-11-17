@@ -1,8 +1,8 @@
 package pl.sdacademy.projecteventsbackend.component.userContext;
 
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import pl.sdacademy.projecteventsbackend.User.UserEntity;
-import pl.sdacademy.projecteventsbackend.User.UserRepository;
+import pl.sdacademy.projecteventsbackend.user.model.UserEntity;
+import pl.sdacademy.projecteventsbackend.user.UserRepository;
 
 public class UserContextImpl implements UserContext{
 

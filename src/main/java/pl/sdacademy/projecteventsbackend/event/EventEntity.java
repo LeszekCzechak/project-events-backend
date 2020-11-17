@@ -1,4 +1,4 @@
-package pl.sdacademy.projecteventsbackend.Event;
+package pl.sdacademy.projecteventsbackend.event;
 
 import pl.sdacademy.projecteventsbackend.User.UserEntity;
 
@@ -13,7 +13,7 @@ public class EventEntity {
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "address_id")
+//    @JoinColumn(name = "address_id")
     private AddressEntity address;
 
     @ManyToOne

@@ -1,4 +1,4 @@
-package pl.sdacademy.projecteventsbackend.Event;
+package pl.sdacademy.projecteventsbackend.event;
 
 import org.springframework.stereotype.Service;
 import pl.sdacademy.projecteventsbackend.exception.EventNameNotFoundException;

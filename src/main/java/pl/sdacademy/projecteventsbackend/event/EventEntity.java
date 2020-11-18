@@ -11,9 +11,11 @@ public class EventEntity {
     private Long id;
     private String name;
     private String description;
+    @Enumerated(EnumType.STRING)
+    private AccessToEvent accessToEvent;
 
     @ManyToOne
-//    @JoinColumn(name = "address_id")
+    @JoinColumn(name = "address_id")
     private AddressEntity address;
 
     @ManyToOne
@@ -21,10 +23,12 @@ public class EventEntity {
     private UserEntity organizer;
 
 
-    public EventEntity(String name, String description, AddressEntity address) {
+    public EventEntity(String name, String description, AccessToEvent accessToEvent, AddressEntity address) {
         this.name = name;
         this.description = description;
+        this.accessToEvent = accessToEvent;
         this.address = address;
+
     }
 
     public EventEntity() {
@@ -61,5 +65,18 @@ public class EventEntity {
 
     public void setOrganizer(UserEntity organizerId) {
         this.organizer = organizerId;
+    }
+    public AccessToEvent getAccessToEvent() {
+        return accessToEvent;
+    }
+
+    public void setAccessToEvent(AccessToEvent accessToEvent) {
+        this.accessToEvent = accessToEvent;
+    }
+
+
+    public enum AccessToEvent {
+        PUBLIC,
+        PRIVATE
     }
 }

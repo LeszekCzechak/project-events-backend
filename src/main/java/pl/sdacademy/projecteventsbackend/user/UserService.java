@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.sdacademy.projecteventsbackend.component.userContext.UserContext;
 import pl.sdacademy.projecteventsbackend.user.dto.EditUserRequest;
 import pl.sdacademy.projecteventsbackend.user.dto.RegisterUserRequest;
 import pl.sdacademy.projecteventsbackend.user.dto.UserResponse;
@@ -21,10 +22,12 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final UserContext userContext;
 
-    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, UserContext userContext) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.userContext = userContext;
     }
 
     public UserResponse registerUser(RegisterUserRequest newUser) {
@@ -55,15 +58,23 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public UserResponse updateUserByUserId(long userId, EditUserRequest editedData) {
-        UserEntity userEntity = userRepository.getOne(userId);
-        userEntity.setUsername(editedData.getName());
-        userEntity.setMail(editedData.getMail());
-        userEntity.setDateOfBirth(editedData.getDateOfBirth());
-        userEntity.setUpdatedOn(LocalDateTime.now());
-        userRepository.save(userEntity);
+        UserEntity userEntity = userRepository.findById(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        UserResponse response = new UserResponse(userEntity.getId(), userEntity.getUsername(), userEntity.getMail(), userEntity.getDateOfBirth());
-        return response;
+        UserEntity currentUser = userContext.getCurrentUser();
+
+        if(currentUser.equals(userEntity)) {
+            userEntity.setUsername(editedData.getName());
+            userEntity.setMail(editedData.getMail());
+            userEntity.setDateOfBirth(editedData.getDateOfBirth());
+            userEntity.setUpdatedOn(LocalDateTime.now());
+            userRepository.save(userEntity);
+            UserResponse response = new UserResponse(userEntity.getId(), userEntity.getUsername(), userEntity.getMail(), userEntity.getDateOfBirth());
+            return response;
+        } else {
+            System.out.println("Zabroniono");
+            return null;
+        }
     }
 
     @Override

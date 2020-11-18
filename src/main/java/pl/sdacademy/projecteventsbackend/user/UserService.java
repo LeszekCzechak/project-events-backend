@@ -65,16 +65,16 @@ public class UserService implements UserDetailsService {
 
         UserEntity currentUser = userContext.getCurrentUser();
 
-        if(!currentUser.equals(userEntity)) {
+        if (!currentUser.equals(userEntity) || currentUser.getEnabled() == false) {
             throw new AccessDeniedException("Can't do that");
         }
-            userEntity.setUsername(editedData.getName());
-            userEntity.setMail(editedData.getMail());
-            userEntity.setDateOfBirth(editedData.getDateOfBirth());
-            userEntity.setUpdatedOn(LocalDateTime.now());
-            userRepository.save(userEntity);
-            UserResponse response = new UserResponse(userEntity.getId(), userEntity.getUsername(), userEntity.getMail(), userEntity.getDateOfBirth());
-            return response;
+        userEntity.setUsername(editedData.getName());
+        userEntity.setMail(editedData.getMail());
+        userEntity.setDateOfBirth(editedData.getDateOfBirth());
+        userEntity.setUpdatedOn(LocalDateTime.now());
+        userRepository.save(userEntity);
+        UserResponse response = new UserResponse(userEntity.getId(), userEntity.getUsername(), userEntity.getMail(), userEntity.getDateOfBirth());
+        return response;
     }
 
     @Override

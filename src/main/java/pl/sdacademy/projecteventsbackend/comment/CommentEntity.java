@@ -19,7 +19,7 @@ public class CommentEntity {
     private UserEntity name;
     private LocalDateTime createdOn;
     private LocalDateTime updateOn;
-    private String content;
+    private String content = null;
 
 
     public CommentEntity() {
@@ -30,7 +30,6 @@ public class CommentEntity {
         this.id = id;
         this.eventId = eventId;
         this.name = name;
-        this.content = null;
     }
 
     public Long getId() {

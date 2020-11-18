@@ -1,6 +1,5 @@
 package pl.sdacademy.projecteventsbackend.user;
 
-import org.springframework.dao.PermissionDeniedDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,6 +8,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.sdacademy.projecteventsbackend.component.mailService.MailService;
 import pl.sdacademy.projecteventsbackend.component.userContext.UserContext;
 import pl.sdacademy.projecteventsbackend.user.dto.EditUserRequest;
 import pl.sdacademy.projecteventsbackend.user.dto.RegisterUserRequest;
@@ -16,6 +16,7 @@ import pl.sdacademy.projecteventsbackend.user.dto.UserResponse;
 import pl.sdacademy.projecteventsbackend.user.model.UserEntity;
 import pl.sdacademy.projecteventsbackend.user.model.UserRole;
 
+import javax.mail.MessagingException;
 import java.time.LocalDateTime;
 import java.util.Collections;
 
@@ -25,11 +26,13 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final UserContext userContext;
+    private final MailService mailService;
 
-    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, UserContext userContext) {
+    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, UserContext userContext, MailService mailService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.userContext = userContext;
+        this.mailService = mailService;
     }
 
     public UserResponse registerUser(RegisterUserRequest newUser) {
@@ -47,6 +50,12 @@ public class UserService implements UserDetailsService {
         userEntity.setDateOfBirth(newUser.getDateOfBirth());
 
         userRepository.save(userEntity);
+        try {
+            mailService.sendMail(newUser.getMail(),
+                    "Hi, it's me","You just register on the best app ever!",false);
+        } catch (MessagingException e) {
+
+        }
 
         UserResponse response = new UserResponse(userEntity.getId(), userEntity.getUsername(), userEntity.getMail(), userEntity.getDateOfBirth());
         return response;

@@ -1,5 +1,6 @@
 package pl.sdacademy.projecteventsbackend.comment;
 
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.sdacademy.projecteventsbackend.comment.dto.CommentResponse;
 import pl.sdacademy.projecteventsbackend.comment.dto.EditCommentRequest;
@@ -8,6 +9,7 @@ import pl.sdacademy.projecteventsbackend.user.dto.UserResponse;
 
 import java.time.LocalDateTime;
 
+@Service
 public class CommentService {
     private final CommentRepository commentRepository;
 

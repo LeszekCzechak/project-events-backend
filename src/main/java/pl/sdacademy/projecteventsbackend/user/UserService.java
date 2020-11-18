@@ -1,6 +1,8 @@
 package pl.sdacademy.projecteventsbackend.user;
 
+import org.springframework.dao.PermissionDeniedDataAccessException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -63,7 +65,9 @@ public class UserService implements UserDetailsService {
 
         UserEntity currentUser = userContext.getCurrentUser();
 
-        if(currentUser.equals(userEntity)) {
+        if(!currentUser.equals(userEntity)) {
+            throw new AccessDeniedException("Can't do that");
+        }
             userEntity.setUsername(editedData.getName());
             userEntity.setMail(editedData.getMail());
             userEntity.setDateOfBirth(editedData.getDateOfBirth());
@@ -71,10 +75,6 @@ public class UserService implements UserDetailsService {
             userRepository.save(userEntity);
             UserResponse response = new UserResponse(userEntity.getId(), userEntity.getUsername(), userEntity.getMail(), userEntity.getDateOfBirth());
             return response;
-        } else {
-            System.out.println("Zabroniono");
-            return null;
-        }
     }
 
     @Override

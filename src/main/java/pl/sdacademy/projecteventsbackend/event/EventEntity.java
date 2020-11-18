@@ -17,7 +17,7 @@ public class EventEntity {
     private AddressEntity address;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "organizer_id")
     private UserEntity organizer;
 
 

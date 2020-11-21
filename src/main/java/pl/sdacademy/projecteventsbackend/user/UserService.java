@@ -6,6 +6,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.social.connect.Connection;
+import org.springframework.social.connect.ConnectionSignUp;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.sdacademy.projecteventsbackend.component.mailService.MailService;
@@ -17,11 +19,12 @@ import pl.sdacademy.projecteventsbackend.user.model.UserEntity;
 import pl.sdacademy.projecteventsbackend.user.model.UserRole;
 
 import javax.mail.MessagingException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 
 @Service
-public class UserService implements UserDetailsService {
+public class UserService implements UserDetailsService, ConnectionSignUp {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
@@ -102,5 +105,23 @@ public class UserService implements UserDetailsService {
         userEntity.setUpdatedOn(LocalDateTime.now());
         userRepository.save(userEntity);
         return HttpStatus.OK;
+    }
+
+    @Override
+    public String execute(Connection<?> connection) {
+        UserEntity userEntity= new UserEntity();
+        userEntity.setUsername(connection.getDisplayName());
+        userEntity.setPassword(passwordEncoder.encode("user"));
+        userEntity.setMail(null);
+        userEntity.setAccountNonExpired(true);
+        userEntity.setAccountNonLocked(true);
+        userEntity.setCreatedUserDate(LocalDateTime.now());
+        userEntity.setCredentialsNonExpired(true);
+        userEntity.setEnabled(true);
+        userEntity.setRoles(Collections.singleton(UserRole.USER));
+        userEntity.setUpdatedOn(LocalDateTime.now());
+        userEntity.setDateOfBirth(LocalDate.now());
+        userRepository.save(userEntity);
+        return userEntity.getUsername();
     }
 }

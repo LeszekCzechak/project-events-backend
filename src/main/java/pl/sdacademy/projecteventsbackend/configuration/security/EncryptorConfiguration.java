@@ -1,4 +1,4 @@
-package pl.sdacademy.projecteventsbackend.security.configuration;
+package pl.sdacademy.projecteventsbackend.configuration.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

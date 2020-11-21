@@ -1,12 +1,15 @@
 package pl.sdacademy.projecteventsbackend.user;
 
+import org.springframework.dao.PermissionDeniedDataAccessException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.sdacademy.projecteventsbackend.component.userContext.UserContext;
 import pl.sdacademy.projecteventsbackend.user.dto.EditUserRequest;
 import pl.sdacademy.projecteventsbackend.user.dto.RegisterUserRequest;
 import pl.sdacademy.projecteventsbackend.user.dto.UserResponse;
@@ -21,10 +24,12 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final UserContext userContext;
 
-    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, UserContext userContext) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.userContext = userContext;
     }
 
     public UserResponse registerUser(RegisterUserRequest newUser) {
@@ -55,13 +60,19 @@ public class UserService implements UserDetailsService {
 
     @Transactional
     public UserResponse updateUserByUserId(long userId, EditUserRequest editedData) {
-        UserEntity userEntity = userRepository.getOne(userId);
+        UserEntity userEntity = userRepository.findById(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        UserEntity currentUser = userContext.getCurrentUser();
+
+        if (!currentUser.equals(userEntity) || currentUser.getEnabled() == false) {
+            throw new AccessDeniedException("Can't do that");
+        }
         userEntity.setUsername(editedData.getName());
         userEntity.setMail(editedData.getMail());
         userEntity.setDateOfBirth(editedData.getDateOfBirth());
         userEntity.setUpdatedOn(LocalDateTime.now());
         userRepository.save(userEntity);
-
         UserResponse response = new UserResponse(userEntity.getId(), userEntity.getUsername(), userEntity.getMail(), userEntity.getDateOfBirth());
         return response;
     }

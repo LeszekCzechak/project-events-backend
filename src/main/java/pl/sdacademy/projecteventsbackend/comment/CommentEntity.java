@@ -16,7 +16,7 @@ public class CommentEntity {
     @ManyToOne
     private EventEntity eventId;
     @ManyToOne
-    private UserEntity name;
+    private UserEntity createdBy;
     private LocalDateTime createdOn;
     private LocalDateTime updateOn;
     private String content = null;
@@ -26,10 +26,10 @@ public class CommentEntity {
 
     }
 
-    public CommentEntity(Long id, EventEntity eventId, UserEntity name) {
+    public CommentEntity(Long id, EventEntity eventId, UserEntity createdBy) {
         this.id = id;
         this.eventId = eventId;
-        this.name = name;
+        this.createdBy = createdBy;
     }
 
     public Long getId() {
@@ -48,12 +48,12 @@ public class CommentEntity {
         this.eventId = eventId;
     }
 
-    public UserEntity getName() {
-        return name;
+    public UserEntity getCreatedBy() {
+        return createdBy;
     }
 
-    public void setName(UserEntity name) {
-        this.name = name;
+    public void setCreatedBy(UserEntity createdBy) {
+        this.createdBy = createdBy;
     }
 
     public LocalDateTime getCreatedOn() {

@@ -4,6 +4,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import pl.sdacademy.projecteventsbackend.user.model.UserEntity;
 import pl.sdacademy.projecteventsbackend.user.UserRepository;
+
 @Component
 public class UserContextImpl implements UserContext {
 

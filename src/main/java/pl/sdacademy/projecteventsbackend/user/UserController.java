@@ -20,7 +20,7 @@ public class UserController {
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public UserResponse registerUser(@RequestBody RegisterUserRequest newUser) {
-        UserResponse createdUser = userService.registerUser(newUser);
+        UserResponse createdUser = userService.sendRegistrationEmail(newUser);
         return createdUser;
     }
 
@@ -31,13 +31,18 @@ public class UserController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public UserResponse editUser(@PathVariable("id") long userId, @RequestBody EditUserRequest editedData){
+    public UserResponse editUser(@PathVariable("id") long userId, @RequestBody EditUserRequest editedData) {
         return userService.updateUserByUserId(userId, editedData);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable ("id") long userId){
+    public ResponseEntity<Void> deleteUser(@PathVariable("id") long userId) {
         HttpStatus httpStatus = userService.deleteUserById(userId);
         return new ResponseEntity<>(httpStatus);
+    }
+
+    @GetMapping("/register/{username}/{uuid}")
+    public void activateAccount(@PathVariable("username") String username, @PathVariable("uuid") String uuid) {
+        userService.activateAccount(username, uuid);
     }
 }

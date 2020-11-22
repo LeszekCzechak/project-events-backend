@@ -43,7 +43,7 @@ public class EventEntity {
         return name;
     }
 
-    public String getDescription() {
+    public String getDescription(String description) {
         return description;
     }
 

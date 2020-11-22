@@ -23,7 +23,6 @@ public class EventController {
     @GetMapping("/{name}")
     @ResponseStatus(HttpStatus.OK)
     public EventEntity getEventByName(@PathVariable String name) {
-
         return eventService.getEventByName(name);
     }
 
@@ -33,5 +32,9 @@ public class EventController {
         return eventService.addNewEvent(newEvent);
     }
 
-
+    @GetMapping("/city/{city}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<EventEntity> findAllByAdress_City(@PathVariable String city) {
+        return eventService.findAllByAdress_City(city);
+    }
 }

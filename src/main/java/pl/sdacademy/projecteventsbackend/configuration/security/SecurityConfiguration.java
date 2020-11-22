@@ -10,21 +10,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.social.connect.ConnectionFactoryLocator;
 import org.springframework.social.connect.UsersConnectionRepository;
 import org.springframework.social.connect.mem.InMemoryUsersConnectionRepository;
-import org.springframework.social.connect.support.ConnectionFactoryRegistry;
-import org.springframework.social.connect.web.ProviderSignInController;
-import org.springframework.social.facebook.connect.FacebookConnectionFactory;
-import pl.sdacademy.projecteventsbackend.configuration.facebook.FacebookSignInAdapter;
 import pl.sdacademy.projecteventsbackend.user.UserService;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
-
-
-    @Value("${spring.social.facebook.appSecret}")
-    String appSecret;
-    @Value("${spring.social.facebook.appId}")
-    String appId;
 
     private final UserService userService;
 
@@ -52,22 +42,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(userService);
     }
 
-    @Bean
-    public ProviderSignInController providerSignInController() {
-        ConnectionFactoryLocator connectionFactoryLocator =
-                connectionFactoryLocator();
-        UsersConnectionRepository usersConnectionRepository =
-                getUsersConnectionRepository(connectionFactoryLocator);
-        ((InMemoryUsersConnectionRepository) usersConnectionRepository)
-                .setConnectionSignUp(userService);
-        return new ProviderSignInController(connectionFactoryLocator,
-                usersConnectionRepository, new FacebookSignInAdapter());
-    }
-    private ConnectionFactoryLocator connectionFactoryLocator() {
-        ConnectionFactoryRegistry registry = new ConnectionFactoryRegistry();
-        registry.addConnectionFactory(new FacebookConnectionFactory(appId, appSecret));
-        return registry;
-    }
 
     private UsersConnectionRepository getUsersConnectionRepository(ConnectionFactoryLocator
                                                                            connectionFactoryLocator) {

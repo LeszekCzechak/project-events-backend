@@ -1,6 +1,7 @@
 package pl.sdacademy.projecteventsbackend.event;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 public class AddressEntity {
@@ -11,16 +12,18 @@ public class AddressEntity {
     private String street;
     private String city;
     private int zipcode;
+    //private Set<Long> eventId;
 
 
     public AddressEntity() {
     }
 
-    public AddressEntity(long id, String street, String city, int zipcode) {
+    public AddressEntity(long id, String street, String city, int zipcode /*Set<Long> eventId*/) {
         this.id = id;
         this.street = street;
         this.city = city;
         this.zipcode = zipcode;
+        //this.eventId = eventId;
     }
 
     public long getId() {
@@ -38,4 +41,5 @@ public class AddressEntity {
     public int getZipcode() {
         return zipcode;
     }
+    //public Set<Long> getSet() { return eventId; }
 }

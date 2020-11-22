@@ -1,15 +1,11 @@
 package pl.sdacademy.projecteventsbackend.configuration.security;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.social.connect.ConnectionFactoryLocator;
-import org.springframework.social.connect.UsersConnectionRepository;
-import org.springframework.social.connect.mem.InMemoryUsersConnectionRepository;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import pl.sdacademy.projecteventsbackend.user.UserService;
 
 @Configuration
@@ -26,25 +22,20 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         http
+                .cors().and()
+                .httpBasic().and()
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers( "/login", "/", "/user/register/**").permitAll()
-                .anyRequest().permitAll()
+                .antMatchers("/login", "/", "/user/register/**").permitAll()
+                .anyRequest().authenticated()
                 .and()
-                .formLogin().permitAll()
-                .and()
-                .cors()
-                .disable(); // TODO: Change permission
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);// TODO: Change permission
+
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userService);
-    }
-
-
-    private UsersConnectionRepository getUsersConnectionRepository(ConnectionFactoryLocator
-                                                                           connectionFactoryLocator) {
-        return new InMemoryUsersConnectionRepository(connectionFactoryLocator);
     }
 }

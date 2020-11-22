@@ -1,7 +1,6 @@
 package pl.sdacademy.projecteventsbackend.comment;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.sdacademy.projecteventsbackend.comment.dto.CommentResponse;
 import pl.sdacademy.projecteventsbackend.comment.dto.EditCommentRequest;

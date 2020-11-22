@@ -24,6 +24,7 @@ public class EventService {
     }
 
     public EventEntity addNewEvent(EventEntity newEvent) {
+
         return eventRepository.save(newEvent);
     }
 }

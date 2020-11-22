@@ -47,6 +47,8 @@ public class UserEntity implements UserDetails {
     private LocalDateTime updatedOn;
     @Column
     private LocalDate dateOfBirth;
+    @Column
+    private String uuidUser;
 
 
     public UserEntity() {
@@ -59,7 +61,7 @@ public class UserEntity implements UserDetails {
         this.dateOfBirth=dateOfBirth;
     }
 
-    public UserEntity(Long id, @NotBlank(message = "This field must not be empty") String username, @NotBlank(message = "This field must not be empty") String password, @Email String mail, Boolean isAccountNonExpired, Boolean isAccountNonLocked, Boolean isCredentialsNonExpired, Boolean isEnabled, Set<UserRole> roles, LocalDateTime createdUserDate, LocalDateTime updatedOn, LocalDate dateOfBirth) {
+    public UserEntity(Long id, @NotBlank(message = "This field must not be empty") String username, @NotBlank(message = "This field must not be empty") String password, @Email String mail, Boolean isAccountNonExpired, Boolean isAccountNonLocked, Boolean isCredentialsNonExpired, Boolean isEnabled, Set<UserRole> roles, LocalDateTime createdUserDate, LocalDateTime updatedOn, LocalDate dateOfBirth, String uuidUser) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -72,6 +74,7 @@ public class UserEntity implements UserDetails {
         this.createdUserDate = createdUserDate;
         this.updatedOn = updatedOn;
         this.dateOfBirth = dateOfBirth;
+        this.uuidUser = uuidUser;
     }
 
     @Override
@@ -195,5 +198,13 @@ public class UserEntity implements UserDetails {
 
     public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
+    }
+
+    public String getUuidUser() {
+        return uuidUser;
+    }
+
+    public void setUuidUser(String uuidUser) {
+        this.uuidUser = uuidUser;
     }
 }

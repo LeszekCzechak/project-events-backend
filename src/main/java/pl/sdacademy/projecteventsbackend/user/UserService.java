@@ -22,6 +22,7 @@ import javax.mail.MessagingException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.UUID;
 
 @Service
 public class UserService implements UserDetailsService, ConnectionSignUp {
@@ -42,6 +43,7 @@ public class UserService implements UserDetailsService, ConnectionSignUp {
         UserEntity userEntity = new UserEntity();
         userEntity.setUsername(newUser.getName());
         userEntity.setPassword(passwordEncoder.encode(newUser.getPassword()));
+        userEntity.setUuidUser(uuidGenerator(newUser));
         userEntity.setMail(newUser.getMail());
         userEntity.setAccountNonExpired(true);
         userEntity.setAccountNonLocked(true);
@@ -64,6 +66,12 @@ public class UserService implements UserDetailsService, ConnectionSignUp {
         return response;
     }
 
+    private String uuidGenerator(RegisterUserRequest newUser) {
+        String textToUuid= ""+ newUser.getName()+ newUser.getPassword();
+        String uuidUser = UUID.nameUUIDFromBytes(textToUuid.getBytes()).toString();
+        return uuidUser;
+    }
+
     public UserResponse getUserById(long userId) {
         UserEntity userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
@@ -77,7 +85,7 @@ public class UserService implements UserDetailsService, ConnectionSignUp {
 
         UserEntity currentUser = userContext.getCurrentUser();
 
-        if (!currentUser.equals(userEntity) || currentUser.getEnabled() == false) {
+        if (!currentUser.equals(userEntity) || !currentUser.getEnabled()) {
             throw new AccessDeniedException("Can't do that");
         }
         userEntity.setUsername(editedData.getName());
@@ -123,5 +131,52 @@ public class UserService implements UserDetailsService, ConnectionSignUp {
         userEntity.setDateOfBirth(LocalDate.now());
         userRepository.save(userEntity);
         return userEntity.getUsername();
+    }
+
+    public UserResponse sendRegistrationEmail(RegisterUserRequest newUser){
+        UserEntity userEntity = new UserEntity();
+        userEntity.setUsername(newUser.getName());
+        userEntity.setPassword(passwordEncoder.encode(newUser.getPassword()));
+        String uuidUser = uuidGenerator(newUser);
+        userEntity.setUuidUser(uuidUser);
+        userEntity.setMail(newUser.getMail());
+        userEntity.setAccountNonExpired(true);
+        userEntity.setAccountNonLocked(true);
+        userEntity.setCreatedUserDate(LocalDateTime.now());
+        userEntity.setCredentialsNonExpired(true);
+        userEntity.setRoles(Collections.singleton(UserRole.USER));
+        userEntity.setUpdatedOn(LocalDateTime.now());
+        userEntity.setDateOfBirth(newUser.getDateOfBirth());
+        userEntity.setEnabled(false);
+
+        userRepository.save(userEntity);
+        try {
+            String activationLink= "http://localhost:8080/user/register/"+userEntity.getUsername()+"/"+uuidUser;
+
+            String url = "<a href=\"" + activationLink + "\">Aktywuj</a>";
+
+            mailService.sendMail(newUser.getMail(),
+                    "Registration link",
+                    "Hi " + newUser.getName() + ",\n" +
+                            "Click link to activate Your account.\n"
+                            + url,
+                    true);
+        } catch (MessagingException e) {
+        }
+
+        UserResponse response = new UserResponse(userEntity.getId(), userEntity.getUsername(),
+                userEntity.getMail(), userEntity.getDateOfBirth());
+        return response;
+    }
+
+    @Transactional
+    public void activateAccount(String username, String uuid) {
+        UserEntity userEntity = userRepository.findUserEntityByUuidUser(uuid)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        if(username.equals(userEntity.getUsername())){
+            userEntity.setEnabled(true);
+            userRepository.save(userEntity);
+        } else throw new AccessDeniedException("You can't do that");
     }
 }

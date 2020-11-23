@@ -3,6 +3,7 @@ package pl.sdacademy.projecteventsbackend.event;
 import pl.sdacademy.projecteventsbackend.user.model.UserEntity;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 public class EventEntity {
@@ -20,11 +21,15 @@ public class EventEntity {
     @JoinColumn(name = "organizer_id")
     private UserEntity organizer;
 
+    private LocalDateTime eventStart;
 
-    public EventEntity(String name, String description, AddressEntity address) {
+
+    public EventEntity(String name, String description, AddressEntity address, UserEntity organizer, LocalDateTime eventStart) {
         this.name = name;
         this.description = description;
         this.address = address;
+        this.organizer = organizer;
+        this.eventStart = eventStart;
     }
 
     public EventEntity() {
@@ -39,7 +44,7 @@ public class EventEntity {
         return name;
     }
 
-    public String getDescription(String description) {
+    public String getDescription() {
         return description;
     }
 
@@ -62,4 +67,17 @@ public class EventEntity {
     public void setOrganizer(UserEntity organizerId) {
         this.organizer = organizerId;
     }
+
+    public LocalDateTime getEventStart() {
+        return eventStart;
+    }
+
+    public void setEventStart(LocalDateTime eventStart) {
+        this.eventStart = eventStart;
+    }
+
+    public UserEntity getOrganizer() {
+        return organizer;
+    }
+
 }

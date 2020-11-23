@@ -1,25 +1,18 @@
 package pl.sdacademy.projecteventsbackend.event.dto;
 
-
-import pl.sdacademy.projecteventsbackend.event.EventController;
-
 import java.time.LocalDateTime;
 
-public class CreateEventRequest {
-    /*
-    long createdById; String eventName;
-    String description; LocalDateTime eventStart;
-    String street; String city; int/String zip-code;
-     */
-    //private long createsdById;
+public class CreateEventResponse {
+
     private String eventName;
     private String description;
     private LocalDateTime eventStart;
     private String street;
     private String city;
     private String zipcode;
+    private String organizerName;
 
-    public CreateEventRequest() {
+    public CreateEventResponse() {
     }
 
     public String getEventName() {
@@ -68,5 +61,13 @@ public class CreateEventRequest {
 
     public void setZipcode(String zipcode) {
         this.zipcode = zipcode;
+    }
+
+    public String getOrganizerName() {
+        return organizerName;
+    }
+
+    public void setOrganizerName(String organizerName) {
+        this.organizerName = organizerName;
     }
 }

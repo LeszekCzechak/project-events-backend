@@ -65,6 +65,7 @@ public class EventService {
         response.setDescription(eventEntity.getDescription());
         response.setEventName(eventEntity.getName());
         response.setOrganizerName(eventEntity.getOrganizer().getUsername());
+        response.setEventStart(eventEntity.getEventStart());
 
         addressRepository.save(addressEntity);
         eventRepository.save(eventEntity);

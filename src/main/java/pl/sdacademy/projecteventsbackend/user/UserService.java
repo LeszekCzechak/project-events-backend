@@ -23,6 +23,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 @Service
 public class UserService implements UserDetailsService, ConnectionSignUp {
@@ -162,6 +163,8 @@ public class UserService implements UserDetailsService, ConnectionSignUp {
                             + url,
                     true);
         } catch (MessagingException e) {
+            e.printStackTrace();
+            System.err.println(e);
         }
 
         UserResponse response = new UserResponse(userEntity.getId(), userEntity.getUsername(),

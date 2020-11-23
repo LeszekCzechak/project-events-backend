@@ -1,8 +1,5 @@
 package pl.sdacademy.projecteventsbackend.event.dto;
 
-
-import pl.sdacademy.projecteventsbackend.event.EventController;
-
 import java.time.LocalDateTime;
 
 public class CreateEventRequest {

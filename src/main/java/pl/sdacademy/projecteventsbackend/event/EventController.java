@@ -21,7 +21,7 @@ public class EventController {
     }
 
 
-    @GetMapping("/{name}")
+    @GetMapping("/name/{name}")
     @ResponseStatus(HttpStatus.OK)
     public EventEntity getEventByName(@PathVariable String name) {
         return eventService.getEventByName(name);
@@ -30,7 +30,8 @@ public class EventController {
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
     public CreateEventResponse addNewEvent(@RequestBody CreateEventRequest newEvent) {
-        return eventService.addNewEvent(newEvent);
+        CreateEventResponse response = eventService.addNewEvent(newEvent);
+        return response;
     }
 
     @GetMapping("/city/{city}")

@@ -1,7 +1,6 @@
 package pl.sdacademy.projecteventsbackend.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;
 import pl.sdacademy.projecteventsbackend.user.model.UserEntity;
 

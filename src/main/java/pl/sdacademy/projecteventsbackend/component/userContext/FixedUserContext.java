@@ -6,18 +6,11 @@ import pl.sdacademy.projecteventsbackend.user.model.UserEntity;
 import pl.sdacademy.projecteventsbackend.user.UserRepository;
 
 @Component
-public class UserContextImpl implements UserContext {
-
-    private UserEntity userEntity;
+public class FixedUserContext implements UserContext {
     private final UserRepository userRepository;
 
-    public UserContextImpl(UserRepository userRepository) {
+    public FixedUserContext(UserRepository userRepository) {
         this.userRepository = userRepository;
-    }
-
-    @Override
-    public void setUserEntity(UserEntity userEntity) {
-        this.userEntity = userEntity;
     }
 
     @Override

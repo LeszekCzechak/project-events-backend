@@ -5,9 +5,9 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.sdacademy.projecteventsbackend.comment.dto.CommentResponse;
 import pl.sdacademy.projecteventsbackend.comment.dto.EditCommentRequest;
 import pl.sdacademy.projecteventsbackend.exception.CommentNotFoundException;
-import pl.sdacademy.projecteventsbackend.user.dto.UserResponse;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class CommentService {
@@ -18,19 +18,28 @@ public class CommentService {
     }
 
     @Transactional
-    public void UpdateCommentById(long commentId, EditCommentRequest editComment) {
+    public CommentResponse UpdateCommentById(long commentId, EditCommentRequest editComment) {
         CommentEntity commentEntity = commentRepository.getOne(commentId);
-        commentEntity.setName(editComment.getName());
         commentEntity.setContent(editComment.getContent());
         commentEntity.setUpdateOn(LocalDateTime.now());
         commentRepository.save(commentEntity);
 
-        CommentResponse commentResponse = new CommentResponse(commentEntity.getId(), commentEntity.getName(), commentEntity.getContent());
-
+        return new CommentResponse(commentEntity.getId(), commentEntity.getCreatedBy(), commentEntity.getContent());
     }
 
-    public void DeleteCommentById(long commentId, EditCommentRequest editComment) throws CommentNotFoundException {
+    public void DeleteCommentById(long commentId) throws CommentNotFoundException {
         CommentEntity commentEntity = commentRepository.findById(commentId)
                 .orElseThrow(CommentNotFoundException::new);
+        commentRepository.deleteById(commentId);
     }
+
+
+    public CommentEntity addNewComment(CommentEntity newComment) {
+        return commentRepository.save(newComment);
+    }
+
+    public List<CommentEntity> getAllComment() {
+        return commentRepository.findAll();
+    }
+
 }

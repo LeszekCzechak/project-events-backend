@@ -58,10 +58,12 @@ public class UserController {
     public ResponseEntity<AuthenticationResponse> authenticateUser(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
         try {
             Authentication authentication = authenticationManager.authenticate(
-                    (new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword())));
+                    (new UsernamePasswordAuthenticationToken
+                            (authenticationRequest.getUsername(), authenticationRequest.getPassword())));
         } catch (BadCredentialsException e) {
             throw new Exception("Incorrect Username or Password", e);
         }
+
         UserDetails userDetails = userService.loadUserByUsername(authenticationRequest.getUsername());
         final String jwt = jwtUtil.generateToken(userDetails);
         return ResponseEntity.ok(new AuthenticationResponse(jwt));

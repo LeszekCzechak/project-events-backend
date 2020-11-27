@@ -28,12 +28,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         http
-                .cors().disable()
-//                .and()
+                .cors().and()
 //                .httpBasic().and()
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/user/register/**","/user/authenticate").permitAll()
+                .antMatchers("/user/register/**", "/user/authenticate").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement()

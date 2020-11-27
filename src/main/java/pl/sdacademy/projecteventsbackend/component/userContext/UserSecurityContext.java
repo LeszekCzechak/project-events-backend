@@ -10,9 +10,16 @@ import pl.sdacademy.projecteventsbackend.user.model.UserEntity;
 @Primary
 public class UserSecurityContext implements UserContext {
 
+    private UserEntity userEntity;
+
     @Override
     public UserEntity getCurrentUser() {
-        SecurityContext context = SecurityContextHolder.getContext();
-        return (UserEntity) context.getAuthentication().getPrincipal();
+       return userEntity;
     }
+
+    @Override
+    public void setUserEntity(UserEntity userEntity) {
+        this.userEntity = userEntity;
+    }
+
 }

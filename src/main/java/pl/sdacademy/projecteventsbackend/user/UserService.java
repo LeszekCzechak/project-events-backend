@@ -55,7 +55,7 @@ public class UserService implements UserDetailsService {
 
         UserEntity currentUser = userContext.getCurrentUser();
 
-        if (!currentUser.equals(userEntity) || !currentUser.getEnabled()) {
+        if (!currentUser.getUsername().equals(userEntity.getUsername()) || !currentUser.getEnabled()) {
             throw new AccessDeniedException("Can't do that");
         }
         userEntity.setUsername(editedData.getName());

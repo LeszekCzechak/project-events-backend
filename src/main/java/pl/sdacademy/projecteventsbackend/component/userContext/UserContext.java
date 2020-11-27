@@ -4,4 +4,6 @@ import pl.sdacademy.projecteventsbackend.user.model.UserEntity;
 
 public interface UserContext {
     UserEntity getCurrentUser();
+
+    void setUserEntity(UserEntity userEntity);
 }

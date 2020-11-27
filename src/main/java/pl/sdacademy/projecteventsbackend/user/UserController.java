@@ -2,19 +2,27 @@ package pl.sdacademy.projecteventsbackend.user;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
-import pl.sdacademy.projecteventsbackend.user.dto.EditUserRequest;
-import pl.sdacademy.projecteventsbackend.user.dto.RegisterUserRequest;
-import pl.sdacademy.projecteventsbackend.user.dto.UserResponse;
+import pl.sdacademy.projecteventsbackend.component.util.JwtUtil;
+import pl.sdacademy.projecteventsbackend.user.dto.*;
 
 @RestController
 @RequestMapping("/user")
 public class UserController {
 
     private final UserService userService;
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
         this.userService = userService;
+        this.authenticationManager = authenticationManager;
+        this.jwtUtil = jwtUtil;
     }
 
     @PostMapping("/register")
@@ -44,5 +52,18 @@ public class UserController {
     @GetMapping("/register/{username}/{uuid}")
     public void activateAccount(@PathVariable("username") String username, @PathVariable("uuid") String uuid) {
         userService.activateAccount(username, uuid);
+    }
+
+    @PostMapping("/authenticate")
+    public ResponseEntity<AuthenticationResponse> authenticateUser(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    (new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword())));
+        } catch (BadCredentialsException e) {
+            throw new Exception("Incorrect Username or Password", e);
+        }
+        UserDetails userDetails = userService.loadUserByUsername(authenticationRequest.getUsername());
+        final String jwt = jwtUtil.generateToken(userDetails);
+        return ResponseEntity.ok(new AuthenticationResponse(jwt));
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.social.connect.ConnectionFactoryLocator;
 import org.springframework.social.connect.UsersConnectionRepository;
 import org.springframework.social.connect.mem.InMemoryUsersConnectionRepository;
@@ -26,15 +27,19 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         http
+                .httpBasic()
+                .and()
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers( "/login", "/", "/user/register/**").permitAll()
-                .anyRequest().permitAll()
-                .and()
-                .formLogin().permitAll()
+                .antMatchers(  "/user/register/**", "user/login").permitAll()
+                .anyRequest()
+                .authenticated()
                 .and()
                 .cors()
-                .disable(); // TODO: Change permission
+                .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
     }
 
     @Override

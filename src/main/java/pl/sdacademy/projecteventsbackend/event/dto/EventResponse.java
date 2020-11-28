@@ -2,8 +2,9 @@ package pl.sdacademy.projecteventsbackend.event.dto;
 
 import java.time.LocalDateTime;
 
-public class CreateEventResponse {
+public class EventResponse {
 
+    private Long id;
     private String eventName;
     private String description;
     private LocalDateTime eventStart;
@@ -12,7 +13,18 @@ public class CreateEventResponse {
     private String zipcode;
     private String organizerName;
 
-    public CreateEventResponse() {
+    public EventResponse() {
+    }
+
+    public EventResponse(Long id, String eventName, String description, LocalDateTime eventStart, String street, String city, String zipcode, String organizerName) {
+        this.id = id;
+        this.eventName = eventName;
+        this.description = description;
+        this.eventStart = eventStart;
+        this.street = street;
+        this.city = city;
+        this.zipcode = zipcode;
+        this.organizerName = organizerName;
     }
 
     public String getEventName() {
@@ -69,5 +81,13 @@ public class CreateEventResponse {
 
     public void setOrganizerName(String organizerName) {
         this.organizerName = organizerName;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

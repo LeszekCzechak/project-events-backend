@@ -3,12 +3,12 @@ package pl.sdacademy.projecteventsbackend.event;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import pl.sdacademy.projecteventsbackend.event.dto.CreateEventRequest;
-import pl.sdacademy.projecteventsbackend.event.dto.CreateEventResponse;
+import pl.sdacademy.projecteventsbackend.event.dto.EventResponse;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/event")
+@RequestMapping("/events")
 public class EventController {
     private final EventService eventService;
 
@@ -16,7 +16,8 @@ public class EventController {
         this.eventService = eventService;
     }
 
-    public List<EventEntity> getAllEvents() {
+    @GetMapping
+    public List<EventResponse> getAllEvents() {
         return eventService.getAllEvents();
     }
 
@@ -27,12 +28,13 @@ public class EventController {
         return eventService.getEventByName(name);
     }
 
-    @PostMapping("/create")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CreateEventResponse addNewEvent(@RequestBody CreateEventRequest newEvent) {
-        CreateEventResponse response = eventService.addNewEvent(newEvent);
+    public EventResponse addNewEvent(@RequestBody CreateEventRequest newEvent) {
+        EventResponse response = eventService.addNewEvent(newEvent);
         return response;
     }
+
 
     @GetMapping("/city/{city}")
     @ResponseStatus(HttpStatus.OK)

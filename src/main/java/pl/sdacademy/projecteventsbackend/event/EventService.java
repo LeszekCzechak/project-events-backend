@@ -6,13 +6,14 @@ import pl.sdacademy.projecteventsbackend.component.userContext.UserContext;
 import pl.sdacademy.projecteventsbackend.event.address.AddressEntity;
 import pl.sdacademy.projecteventsbackend.event.address.AddressRepository;
 import pl.sdacademy.projecteventsbackend.event.dto.CreateEventRequest;
-import pl.sdacademy.projecteventsbackend.event.dto.CreateEventResponse;
+import pl.sdacademy.projecteventsbackend.event.dto.EventResponse;
 import pl.sdacademy.projecteventsbackend.exception.EventNameNotFoundException;
 import pl.sdacademy.projecteventsbackend.user.model.UserEntity;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
+
 
 @Service
 public class EventService {
@@ -27,8 +28,23 @@ public class EventService {
         this.userContext = userContext;
     }
 
-    public List<EventEntity> getAllEvents() {
-        return eventRepository.findAll();
+    public List<EventResponse> getAllEvents() {
+        List<EventEntity> eventEntities = eventRepository.findAll();
+
+        List<EventResponse> response = eventEntities.stream()
+                .map(eventEntity -> {
+                    EventResponse eventResponse = new EventResponse(
+                            eventEntity.getId(),
+                            eventEntity.getName(),
+                            eventEntity.getDescription(),
+                            eventEntity.getEventStart(),
+                            eventEntity.getAddress().getCity(),
+                            eventEntity.getAddress().getStreet(),
+                            eventEntity.getAddress().getZipcode(),
+                            eventEntity.getOrganizer().getUsername());
+                    return eventResponse;
+                }).collect(Collectors.toList());
+        return response;
     }
 
     public EventEntity getEventByName(String name) {
@@ -38,7 +54,7 @@ public class EventService {
     }
 
     @Transactional
-    public CreateEventResponse addNewEvent(CreateEventRequest newEvent) {
+    public EventResponse addNewEvent(CreateEventRequest newEvent) {
 
         UserEntity currentUser = userContext.getCurrentUser();
 
@@ -59,7 +75,7 @@ public class EventService {
         eventEntity.setOrganizer(currentUser);
         eventEntity.setEventStart(newEvent.getEventStart());
 
-        CreateEventResponse response = new CreateEventResponse();
+        EventResponse response = new EventResponse();
         response.setCity(eventEntity.getAddress().getCity());
         response.setStreet(eventEntity.getAddress().getStreet());
         response.setZipcode(eventEntity.getAddress().getZipcode());

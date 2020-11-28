@@ -4,7 +4,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.sdacademy.projecteventsbackend.comment.dto.CommentResponse;
 import pl.sdacademy.projecteventsbackend.comment.dto.EditCommentRequest;
+import pl.sdacademy.projecteventsbackend.comment.dto.NewCommentRequest;
+import pl.sdacademy.projecteventsbackend.component.userContext.UserContext;
+import pl.sdacademy.projecteventsbackend.event.EventEntity;
+import pl.sdacademy.projecteventsbackend.event.EventService;
 import pl.sdacademy.projecteventsbackend.exception.CommentNotFoundException;
+import pl.sdacademy.projecteventsbackend.user.model.UserEntity;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,9 +17,13 @@ import java.util.List;
 @Service
 public class CommentService {
     private final CommentRepository commentRepository;
+    private final UserContext userContext;
+    private final EventService eventService;
 
-    public CommentService(CommentRepository commentRepository) {
+    public CommentService(CommentRepository commentRepository, UserContext userContext, EventService eventService) {
         this.commentRepository = commentRepository;
+        this.userContext = userContext;
+        this.eventService = eventService;
     }
 
     @Transactional
@@ -24,7 +33,7 @@ public class CommentService {
         commentEntity.setUpdateOn(LocalDateTime.now());
         commentRepository.save(commentEntity);
 
-        return new CommentResponse(commentEntity.getId(), commentEntity.getCreatedBy(), commentEntity.getContent());
+        return new CommentResponse(commentEntity.getId(), commentEntity.getCreatedBy(), commentEntity.getContent(), commentEntity.getCreatedOn());
     }
 
     public void DeleteCommentById(long commentId) throws CommentNotFoundException {
@@ -34,8 +43,20 @@ public class CommentService {
     }
 
 
-    public CommentEntity addNewComment(CommentEntity newComment) {
-        return commentRepository.save(newComment);
+    public void addNewComment(NewCommentRequest newComment) {
+
+        UserEntity currentUser = userContext.getCurrentUser();
+        EventEntity currentEvent = eventService.getEventById(newComment.getEventId());
+
+        CommentEntity commentEntity=new CommentEntity();
+        commentEntity.setContent(newComment.getContent());
+        commentEntity.setCreatedBy(currentUser);
+        commentEntity.setEventId(currentEvent);
+        commentEntity.setCreatedOn(LocalDateTime.now());
+        commentEntity.setUpdateOn(LocalDateTime.now());
+
+        commentRepository.save(commentEntity);
+
     }
 
     public List<CommentEntity> getAllComment() {

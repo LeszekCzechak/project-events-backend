@@ -1,9 +1,11 @@
 package pl.sdacademy.projecteventsbackend.comment;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.sdacademy.projecteventsbackend.comment.dto.CommentResponse;
 import pl.sdacademy.projecteventsbackend.comment.dto.EditCommentRequest;
+import pl.sdacademy.projecteventsbackend.comment.dto.NewCommentRequest;
 import pl.sdacademy.projecteventsbackend.exception.CommentNotFoundException;
 
 import java.util.List;
@@ -19,8 +21,9 @@ public class CommentController {
     }
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CommentEntity addNewComment(@RequestParam CommentEntity newComment){
-        return commentService.addNewComment(newComment);
+    public ResponseEntity<Void> addNewComment(@RequestBody NewCommentRequest newComment){
+        commentService.addNewComment(newComment);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @DeleteMapping("/id")
@@ -29,7 +32,7 @@ public class CommentController {
     }
 
     @PutMapping("/id")
-    public CommentResponse editComment(@PathVariable ("id") long commentId, EditCommentRequest editComment) throws CommentNotFoundException {
+    public CommentResponse editComment(@PathVariable ("id") long commentId,@RequestBody EditCommentRequest editComment) throws CommentNotFoundException {
         return commentService.UpdateCommentById(commentId, editComment);
     }
 

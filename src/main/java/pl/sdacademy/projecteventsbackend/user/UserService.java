@@ -103,6 +103,7 @@ public class UserService implements UserDetailsService {
         userEntity.setEnabled(false);
 
         userRepository.save(userEntity);
+
         try {
             String activationLink= "http://localhost:8080/user/register/"+userEntity.getUsername()+"/"+uuidUser;
 

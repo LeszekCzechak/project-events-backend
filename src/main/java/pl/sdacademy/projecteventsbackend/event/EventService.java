@@ -12,6 +12,7 @@ import pl.sdacademy.projecteventsbackend.user.model.UserEntity;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class EventService {
@@ -39,13 +40,13 @@ public class EventService {
     @Transactional
     public CreateEventResponse addNewEvent(CreateEventRequest newEvent) {
 
-        UserEntity currentUser= userContext.getCurrentUser();
+        UserEntity currentUser = userContext.getCurrentUser();
 
-        if(!currentUser.getEnabled()) {
+        if (!currentUser.getEnabled()) {
             throw new AccessDeniedException("You can't do that");
         }
 
-        AddressEntity addressEntity=new AddressEntity();
+        AddressEntity addressEntity = new AddressEntity();
         addressEntity.setCity(newEvent.getCity());
         addressEntity.setStreet(newEvent.getStreet());
         addressEntity.setZipcode(newEvent.getZipcode());
@@ -58,7 +59,7 @@ public class EventService {
         eventEntity.setOrganizer(currentUser);
         eventEntity.setEventStart(newEvent.getEventStart());
 
-        CreateEventResponse response=new CreateEventResponse();
+        CreateEventResponse response = new CreateEventResponse();
         response.setCity(eventEntity.getAddress().getCity());
         response.setStreet(eventEntity.getAddress().getStreet());
         response.setZipcode(eventEntity.getAddress().getZipcode());
@@ -84,4 +85,10 @@ public class EventService {
                 .orElseThrow(() -> new EventNameNotFoundException());
         return events;
     }
+
+    public EventEntity getEventById(long id) {
+        return eventRepository.findById(id).orElseThrow(
+                () -> new RuntimeException("Event not found"));//TODO create new exception
+    }
+
 }

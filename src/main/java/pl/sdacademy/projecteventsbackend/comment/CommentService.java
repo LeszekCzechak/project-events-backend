@@ -1,6 +1,5 @@
 package pl.sdacademy.projecteventsbackend.comment;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.sdacademy.projecteventsbackend.comment.dto.CommentResponse;

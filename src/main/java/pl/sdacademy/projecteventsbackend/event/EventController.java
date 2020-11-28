@@ -2,9 +2,10 @@ package pl.sdacademy.projecteventsbackend.event;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import pl.sdacademy.projecteventsbackend.event.dto.CreateEventRequest;
+import pl.sdacademy.projecteventsbackend.event.dto.CreateEventResponse;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/event")
@@ -20,16 +21,17 @@ public class EventController {
     }
 
 
-    @GetMapping("/{name}")
+    @GetMapping("/name/{name}")
     @ResponseStatus(HttpStatus.OK)
     public EventEntity getEventByName(@PathVariable String name) {
         return eventService.getEventByName(name);
     }
 
-    @PostMapping
+    @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
-    public EventEntity addNewEvent(@RequestBody EventEntity newEvent) {
-        return eventService.addNewEvent(newEvent);
+    public CreateEventResponse addNewEvent(@RequestBody CreateEventRequest newEvent) {
+        CreateEventResponse response = eventService.addNewEvent(newEvent);
+        return response;
     }
 
     @GetMapping("/city/{city}")

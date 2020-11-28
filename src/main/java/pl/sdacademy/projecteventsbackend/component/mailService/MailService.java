@@ -16,12 +16,12 @@ public class MailService {
         this.mailSender = mailSender;
     }
 
-    public void sendMail(String to, String subject, String text, boolean isHTMLCOntent) throws MessagingException {
+    public void sendMail(String to, String subject, String text, boolean isHTMLContent) throws MessagingException {
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
         mimeMessageHelper.setTo(to);
         mimeMessageHelper.setSubject(subject);
-        mimeMessageHelper.setText(text, isHTMLCOntent);
+        mimeMessageHelper.setText(text, isHTMLContent);
         mailSender.send(mimeMessage);
     }
 }

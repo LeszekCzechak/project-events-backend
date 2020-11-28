@@ -6,8 +6,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.social.connect.Connection;
-import org.springframework.social.connect.ConnectionSignUp;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.sdacademy.projecteventsbackend.component.mailService.MailService;
@@ -19,13 +17,12 @@ import pl.sdacademy.projecteventsbackend.user.model.UserEntity;
 import pl.sdacademy.projecteventsbackend.user.model.UserRole;
 
 import javax.mail.MessagingException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.UUID;
 
 @Service
-public class UserService implements UserDetailsService, ConnectionSignUp {
+public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
@@ -37,33 +34,6 @@ public class UserService implements UserDetailsService, ConnectionSignUp {
         this.passwordEncoder = passwordEncoder;
         this.userContext = userContext;
         this.mailService = mailService;
-    }
-
-    public UserResponse registerUser(RegisterUserRequest newUser) {
-        UserEntity userEntity = new UserEntity();
-        userEntity.setUsername(newUser.getName());
-        userEntity.setPassword(passwordEncoder.encode(newUser.getPassword()));
-        userEntity.setUuidUser(uuidGenerator(newUser));
-        userEntity.setMail(newUser.getMail());
-        userEntity.setAccountNonExpired(true);
-        userEntity.setAccountNonLocked(true);
-        userEntity.setCreatedUserDate(LocalDateTime.now());
-        userEntity.setCredentialsNonExpired(true);
-        userEntity.setEnabled(true);
-        userEntity.setRoles(Collections.singleton(UserRole.USER));
-        userEntity.setUpdatedOn(LocalDateTime.now());
-        userEntity.setDateOfBirth(newUser.getDateOfBirth());
-
-        userRepository.save(userEntity);
-        try {
-            mailService.sendMail(newUser.getMail(),
-                    "Hi, it's me","You just register on the best app ever!",false);
-        } catch (MessagingException e) {
-
-        }
-
-        UserResponse response = new UserResponse(userEntity.getId(), userEntity.getUsername(), userEntity.getMail(), userEntity.getDateOfBirth());
-        return response;
     }
 
     private String uuidGenerator(RegisterUserRequest newUser) {
@@ -115,23 +85,6 @@ public class UserService implements UserDetailsService, ConnectionSignUp {
         return HttpStatus.OK;
     }
 
-    @Override
-    public String execute(Connection<?> connection) {
-        UserEntity userEntity= new UserEntity();
-        userEntity.setUsername(connection.getDisplayName());
-        userEntity.setPassword(passwordEncoder.encode("user"));
-        userEntity.setMail(null);
-        userEntity.setAccountNonExpired(true);
-        userEntity.setAccountNonLocked(true);
-        userEntity.setCreatedUserDate(LocalDateTime.now());
-        userEntity.setCredentialsNonExpired(true);
-        userEntity.setEnabled(true);
-        userEntity.setRoles(Collections.singleton(UserRole.USER));
-        userEntity.setUpdatedOn(LocalDateTime.now());
-        userEntity.setDateOfBirth(LocalDate.now());
-        userRepository.save(userEntity);
-        return userEntity.getUsername();
-    }
 
     public UserResponse sendRegistrationEmail(RegisterUserRequest newUser){
         UserEntity userEntity = new UserEntity();

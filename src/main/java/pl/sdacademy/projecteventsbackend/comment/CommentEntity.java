@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 @Entity
 public class CommentEntity {
 
-    //user name, user id, event id, event name, content (nullable or „0” by default) - LocalDateTime createdOn; - LocalDateTime updatedOn;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

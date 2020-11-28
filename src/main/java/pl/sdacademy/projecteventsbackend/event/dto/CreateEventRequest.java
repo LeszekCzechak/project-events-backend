@@ -3,12 +3,7 @@ package pl.sdacademy.projecteventsbackend.event.dto;
 import java.time.LocalDateTime;
 
 public class CreateEventRequest {
-    /*
-    long createdById; String eventName;
-    String description; LocalDateTime eventStart;
-    String street; String city; int/String zip-code;
-     */
-    //private long createsdById;
+
     private String eventName;
     private String description;
     private LocalDateTime eventStart;

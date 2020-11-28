@@ -10,18 +10,16 @@ public class AddressEntity {
     private String street;
     private String city;
     private String zipcode;
-    //private Set<Long> eventId;
 
 
     public AddressEntity() {
     }
 
-    public AddressEntity(long id, String street, String city, String zipcode /*Set<Long> eventId*/) {
+    public AddressEntity(long id, String street, String city, String zipcode) {
         this.id = id;
         this.street = street;
         this.city = city;
         this.zipcode = zipcode;
-        //this.eventId = eventId;
     }
 
     public long getId() {
@@ -39,7 +37,6 @@ public class AddressEntity {
     public String getZipcode() {
         return zipcode;
     }
-    //public Set<Long> getSet() { return eventId; }
 
     public void setStreet(String street) {
         this.street = street;

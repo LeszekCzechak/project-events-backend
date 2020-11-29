@@ -1,17 +1,23 @@
 package pl.sdacademy.projecteventsbackend.event;
 
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import pl.sdacademy.projecteventsbackend.component.mailService.MailService;
 import pl.sdacademy.projecteventsbackend.component.userContext.UserContext;
 import pl.sdacademy.projecteventsbackend.event.address.AddressEntity;
 import pl.sdacademy.projecteventsbackend.event.address.AddressRepository;
 import pl.sdacademy.projecteventsbackend.event.dto.CreateEventRequest;
 import pl.sdacademy.projecteventsbackend.event.dto.EventResponse;
+import pl.sdacademy.projecteventsbackend.event.dto.InvitationRequest;
 import pl.sdacademy.projecteventsbackend.exception.EventNameNotFoundException;
+import pl.sdacademy.projecteventsbackend.user.UserRepository;
 import pl.sdacademy.projecteventsbackend.user.model.UserEntity;
 
+import javax.mail.MessagingException;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 
@@ -21,11 +27,15 @@ public class EventService {
     private final AddressRepository addressRepository;
     private final EventRepository eventRepository;
     private final UserContext userContext;
+    private final UserRepository userRepository;
+    private final MailService mailService;
 
-    public EventService(AddressRepository addressRepository, EventRepository eventRepository, UserContext userContext) {
+    public EventService(AddressRepository addressRepository, EventRepository eventRepository, UserContext userContext, UserRepository userRepository, MailService mailService) {
         this.addressRepository = addressRepository;
         this.eventRepository = eventRepository;
         this.userContext = userContext;
+        this.userRepository = userRepository;
+        this.mailService = mailService;
     }
 
     public List<EventResponse> getAllEvents() {
@@ -107,4 +117,44 @@ public class EventService {
                 () -> new RuntimeException("Event not found"));//TODO create new exception
     }
 
+
+    @Transactional
+    public void sendInvitation(InvitationRequest request) {
+
+        EventEntity event = eventRepository.findById(request.getEventId()).orElseThrow(
+                () -> new EventNameNotFoundException());
+
+        String mail= request.getMail();
+
+        if (userContext.getCurrentUser().getId() != event.getOrganizer().getId()) {
+            throw new EventNameNotFoundException();//TODO change exception
+        }
+
+        UserEntity guest = userRepository.findUserEntityByMail(mail).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+
+        String name = guest.getUsername();
+        String textToUuid = "" + name + event.getId();
+        String uuidGuest = UUID.nameUUIDFromBytes(textToUuid.getBytes()).toString();
+        try {
+            String invitationLink = "http://localhost:8080/invitation" + "/" + uuidGuest;
+
+            String url = "<a href=\"" + invitationLink + "\">Aktywuj</a>";
+
+
+            mailService.sendMail(guest.getMail(),
+                    "Invitation to event",
+                    "Hi " + name + ",\n" +
+                            userContext.getCurrentUser().getUsername() + "invaiting you to" +
+                            event.getName() + "\n" +
+                            event.getEventStart() + "\n" +
+                            event.getDescription() + "\n" +
+                            event.getAddress() + "\n" +
+                            "Click link to answer invitation.\n"
+                            + url,
+                    true);
+        } catch (MessagingException e) {
+        }
+
+    }
 }

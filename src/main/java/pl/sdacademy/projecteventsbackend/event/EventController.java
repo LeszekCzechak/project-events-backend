@@ -1,9 +1,12 @@
 package pl.sdacademy.projecteventsbackend.event;
 
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.sdacademy.projecteventsbackend.event.dto.CreateEventRequest;
 import pl.sdacademy.projecteventsbackend.event.dto.EventResponse;
+import pl.sdacademy.projecteventsbackend.event.dto.InvitationRequest;
 
 import java.util.List;
 
@@ -40,5 +43,11 @@ public class EventController {
     @ResponseStatus(HttpStatus.OK)
     public List<EventEntity> findAllByAdress_City(@PathVariable String city) {
         return eventService.findAllByAdress_City(city);
+    }
+
+    @PostMapping("/invitation/send")
+    public ResponseEntity<Void> invitePeople(@RequestBody InvitationRequest invitationRequest) {
+        eventService.sendInvitation(invitationRequest);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

@@ -12,6 +12,8 @@ public class AddressEntity {
     private String zipcode;
     private Double lat;
     private Double lng;
+    private String formattedAddress;
+
 
     public Double getLat() {
         return lat;
@@ -36,8 +38,6 @@ public class AddressEntity {
     public void setFormattedAddress(String formattedAddress) {
         this.formattedAddress = formattedAddress;
     }
-
-    private String formattedAddress;
 
 
     public AddressEntity() {

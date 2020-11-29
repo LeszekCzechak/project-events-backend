@@ -9,6 +9,7 @@ import pl.sdacademy.projecteventsbackend.event.address.AddressEntity;
 import pl.sdacademy.projecteventsbackend.event.address.AddressRepository;
 import pl.sdacademy.projecteventsbackend.event.dto.CreateEventRequest;
 import pl.sdacademy.projecteventsbackend.event.dto.EventResponse;
+import pl.sdacademy.projecteventsbackend.event.dto.FindEventsInDistanceRequest;
 import pl.sdacademy.projecteventsbackend.event.dto.InvitationRequest;
 import pl.sdacademy.projecteventsbackend.exception.EventNameNotFoundException;
 import pl.sdacademy.projecteventsbackend.external.geocodingApi.GeocodingApiClient;
@@ -75,7 +76,7 @@ public class EventService {
             throw new AccessDeniedException("You can't do that");
         }
 
-        String location= newEvent.getStreet().trim()+" "+newEvent.getZipcode().trim()+" "+newEvent.getCity().trim();
+        String location = newEvent.getStreet().trim() + " " + newEvent.getZipcode().trim() + " " + newEvent.getCity().trim();
 
         LocationCoordinates locationCoordinates = geocodingApiClient.getLocationCoordinates(location);
 
@@ -86,7 +87,6 @@ public class EventService {
         addressEntity.setFormattedAddress(locationCoordinates.getFormattedAddress());
         addressEntity.setLat(locationCoordinates.getLat());
         addressEntity.setLng(locationCoordinates.getLng());
-
 
 
         EventEntity eventEntity = new EventEntity();
@@ -135,7 +135,7 @@ public class EventService {
         EventEntity event = eventRepository.findById(request.getEventId()).orElseThrow(
                 () -> new EventNameNotFoundException());
 
-        String mail= request.getMail();
+        String mail = request.getMail();
 
         if (userContext.getCurrentUser().getId() != event.getOrganizer().getId()) {
             throw new EventNameNotFoundException();//TODO change exception
@@ -167,5 +167,19 @@ public class EventService {
         } catch (MessagingException e) {
         }
 
+    }
+
+    public List<EventEntity> findEventsInDistance(FindEventsInDistanceRequest findInDistance) {
+
+        String location = "" + findInDistance.getStreet() + " " + findInDistance.getZipcode() + " " + findInDistance.getCity();
+        LocationCoordinates locationCoordinates = geocodingApiClient.getLocationCoordinates(location);
+
+        Double lat = locationCoordinates.getLat();
+        Double lng = locationCoordinates.getLng();
+        int distance = findInDistance.getDistance();
+
+        List<EventEntity> events = eventRepository.findAllInDistance(lat, lng, distance);
+
+        return events;
     }
 }

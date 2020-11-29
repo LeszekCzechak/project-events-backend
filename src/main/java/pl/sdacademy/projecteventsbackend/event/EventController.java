@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.sdacademy.projecteventsbackend.event.dto.CreateEventRequest;
 import pl.sdacademy.projecteventsbackend.event.dto.EventResponse;
+import pl.sdacademy.projecteventsbackend.event.dto.FindEventsInDistanceRequest;
 import pl.sdacademy.projecteventsbackend.event.dto.InvitationRequest;
 
 import java.util.List;
@@ -49,5 +50,11 @@ public class EventController {
     public ResponseEntity<Void> invitePeople(@RequestBody InvitationRequest invitationRequest) {
         eventService.sendInvitation(invitationRequest);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/find")
+    public ResponseEntity<List<EventEntity>> findEventsInDistance(@RequestBody FindEventsInDistanceRequest findInDistance){
+        List<EventEntity> responseList = eventService.findEventsInDistance(findInDistance);
+        return ResponseEntity.ok(responseList);
     }
 }

@@ -10,16 +10,47 @@ public class AddressEntity {
     private String street;
     private String city;
     private String zipcode;
+    private Double lat;
+    private Double lng;
+
+    public Double getLat() {
+        return lat;
+    }
+
+    public void setLat(Double lat) {
+        this.lat = lat;
+    }
+
+    public Double getLng() {
+        return lng;
+    }
+
+    public void setLng(Double lng) {
+        this.lng = lng;
+    }
+
+    public String getFormattedAddress() {
+        return formattedAddress;
+    }
+
+    public void setFormattedAddress(String formattedAddress) {
+        this.formattedAddress = formattedAddress;
+    }
+
+    private String formattedAddress;
 
 
     public AddressEntity() {
     }
 
-    public AddressEntity(long id, String street, String city, String zipcode) {
+    public AddressEntity(long id, String street, String city, String zipcode, Double lat, Double lng, String formattedAddress) {
         this.id = id;
         this.street = street;
         this.city = city;
         this.zipcode = zipcode;
+        this.lat = lat;
+        this.lng = lng;
+        this.formattedAddress = formattedAddress;
     }
 
     public long getId() {

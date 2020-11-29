@@ -11,6 +11,8 @@ import pl.sdacademy.projecteventsbackend.event.dto.CreateEventRequest;
 import pl.sdacademy.projecteventsbackend.event.dto.EventResponse;
 import pl.sdacademy.projecteventsbackend.event.dto.InvitationRequest;
 import pl.sdacademy.projecteventsbackend.exception.EventNameNotFoundException;
+import pl.sdacademy.projecteventsbackend.external.geocodingApi.GeocodingApiClient;
+import pl.sdacademy.projecteventsbackend.external.geocodingApi.model.LocationCoordinates;
 import pl.sdacademy.projecteventsbackend.user.UserRepository;
 import pl.sdacademy.projecteventsbackend.user.model.UserEntity;
 
@@ -29,13 +31,15 @@ public class EventService {
     private final UserContext userContext;
     private final UserRepository userRepository;
     private final MailService mailService;
+    private final GeocodingApiClient geocodingApiClient;
 
-    public EventService(AddressRepository addressRepository, EventRepository eventRepository, UserContext userContext, UserRepository userRepository, MailService mailService) {
+    public EventService(AddressRepository addressRepository, EventRepository eventRepository, UserContext userContext, UserRepository userRepository, MailService mailService, GeocodingApiClient geocodingApiClient) {
         this.addressRepository = addressRepository;
         this.eventRepository = eventRepository;
         this.userContext = userContext;
         this.userRepository = userRepository;
         this.mailService = mailService;
+        this.geocodingApiClient = geocodingApiClient;
     }
 
     public List<EventResponse> getAllEvents() {
@@ -65,17 +69,24 @@ public class EventService {
 
     @Transactional
     public EventResponse addNewEvent(CreateEventRequest newEvent) {
-
         UserEntity currentUser = userContext.getCurrentUser();
 
         if (!currentUser.getEnabled()) {
             throw new AccessDeniedException("You can't do that");
         }
 
+        String location= newEvent.getStreet().trim()+" "+newEvent.getZipcode().trim()+" "+newEvent.getCity().trim();
+
+        LocationCoordinates locationCoordinates = geocodingApiClient.getLocationCoordinates(location);
+
         AddressEntity addressEntity = new AddressEntity();
         addressEntity.setCity(newEvent.getCity());
         addressEntity.setStreet(newEvent.getStreet());
         addressEntity.setZipcode(newEvent.getZipcode());
+        addressEntity.setFormattedAddress(locationCoordinates.getFormattedAddress());
+        addressEntity.setLat(locationCoordinates.getLat());
+        addressEntity.setLng(locationCoordinates.getLng());
+
 
 
         EventEntity eventEntity = new EventEntity();

@@ -38,6 +38,11 @@ public class EventController {
         EventResponse response = eventService.addNewEvent(newEvent);
         return response;
     }
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public EventResponse getEventResponseById(@PathVariable Long id){
+        return eventService.getEventResponseById(id);
+    }
 
 
     @GetMapping("/city/{city}")

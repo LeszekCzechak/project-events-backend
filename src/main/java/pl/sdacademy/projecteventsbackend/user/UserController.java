@@ -2,6 +2,9 @@ package pl.sdacademy.projecteventsbackend.user;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import pl.sdacademy.projecteventsbackend.user.dto.*;
 
@@ -24,16 +27,13 @@ public class UserController {
         return createdUser;
     }
 
-//    @GetMapping("/login")
-//    @ResponseStatus(HttpStatus.OK)
-//    public LoggedUser authenticate() {
-//        SecurityContext context = SecurityContextHolder.getContext();
-//        Authentication authentication = context.getAuthentication();
-//        String username = authentication.getName();
-//        LoggedUser loggedUser = new LoggedUser(username);
-//        return loggedUser;
-//    }
-//    ZAMIAST GET UZYJ POST ("/login") -authenticateUser
+    @GetMapping("/check-login-status")
+    public LoggedUser authenticate() {
+        SecurityContext context = SecurityContextHolder.getContext();
+        Authentication authentication = context.getAuthentication();
+        String username = authentication.getName();
+        return new LoggedUser(username);
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<UserResponse> getUserById(@PathVariable("id") long userId) {

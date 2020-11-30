@@ -1,13 +1,13 @@
 package pl.sdacademy.projecteventsbackend.user.dto;
 
 public class LoggedUser {
-    String name;
+    String username;
 
-    public LoggedUser(String name) {
-        this.name = name;
+    public LoggedUser(String username) {
+        this.username = username;
     }
 
-    public String getName() {
-        return name;
+    public String getUsername() {
+        return username;
     }
 }

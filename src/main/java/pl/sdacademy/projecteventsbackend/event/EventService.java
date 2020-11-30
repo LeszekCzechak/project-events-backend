@@ -127,6 +127,18 @@ public class EventService {
         return eventRepository.findById(id).orElseThrow(
                 () -> new RuntimeException("Event not found"));//TODO create new exception
     }
+    public EventResponse getEventResponseById(long id) {
+        EventEntity eventEntity = eventRepository.findById(id).orElseThrow(
+                () -> new RuntimeException("Event not found"));//TODO create new exception
+        return new EventResponse(eventEntity.getId(),
+                eventEntity.getName(),
+                eventEntity.getDescription(),
+                eventEntity.getEventStart(),
+                eventEntity.getAddress().getCity(),
+                eventEntity.getAddress().getStreet(),
+                eventEntity.getAddress().getZipcode(),
+                eventEntity.getOrganizer().getUsername());
+    }
 
 
     @Transactional

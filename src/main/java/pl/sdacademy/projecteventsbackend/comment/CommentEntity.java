@@ -13,7 +13,7 @@ public class CommentEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    private EventEntity eventId;
+    private EventEntity event;
     @ManyToOne
     private UserEntity createdBy;
     private LocalDateTime createdOn;
@@ -25,9 +25,9 @@ public class CommentEntity {
 
     }
 
-    public CommentEntity(Long id, EventEntity eventId, UserEntity createdBy) {
+    public CommentEntity(Long id, EventEntity event, UserEntity createdBy) {
         this.id = id;
-        this.eventId = eventId;
+        this.event = event;
         this.createdBy = createdBy;
     }
 
@@ -39,12 +39,12 @@ public class CommentEntity {
         this.id = id;
     }
 
-    public EventEntity getEventId() {
-        return eventId;
+    public EventEntity getEvent() {
+        return event;
     }
 
-    public void setEventId(EventEntity eventId) {
-        this.eventId = eventId;
+    public void setEvent(EventEntity eventId) {
+        this.event = eventId;
     }
 
     public UserEntity getCreatedBy() {

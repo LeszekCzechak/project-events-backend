@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.sdacademy.projecteventsbackend.comment.dto.CommentResponse;
+import pl.sdacademy.projecteventsbackend.comment.dto.CommentResponseByEvent;
 import pl.sdacademy.projecteventsbackend.comment.dto.EditCommentRequest;
 import pl.sdacademy.projecteventsbackend.comment.dto.NewCommentRequest;
 import pl.sdacademy.projecteventsbackend.exception.CommentNotFoundException;
@@ -25,6 +26,13 @@ public class CommentController {
         commentService.addNewComment(newComment);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
+    @GetMapping("/{eventId}/comments")
+    @ResponseStatus(HttpStatus.OK)
+    public List<CommentResponseByEvent> getAllCommentsByEventId (@PathVariable long eventId){
+        return commentService.findCommentByEventId(eventId);
+    }
+
+
 
     @DeleteMapping("/id")
     public void deleteComment(@PathVariable ("id") long commentId) throws CommentNotFoundException {

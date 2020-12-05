@@ -3,6 +3,7 @@ package pl.sdacademy.projecteventsbackend.comment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.sdacademy.projecteventsbackend.comment.dto.CommentResponse;
+import pl.sdacademy.projecteventsbackend.comment.dto.CommentResponseByEvent;
 import pl.sdacademy.projecteventsbackend.comment.dto.EditCommentRequest;
 import pl.sdacademy.projecteventsbackend.comment.dto.NewCommentRequest;
 import pl.sdacademy.projecteventsbackend.component.userContext.UserContext;
@@ -13,6 +14,7 @@ import pl.sdacademy.projecteventsbackend.user.model.UserEntity;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CommentService {
@@ -51,7 +53,7 @@ public class CommentService {
         CommentEntity commentEntity=new CommentEntity();
         commentEntity.setContent(newComment.getContent());
         commentEntity.setCreatedBy(currentUser);
-        commentEntity.setEventId(currentEvent);
+        commentEntity.setEvent(currentEvent);
         commentEntity.setCreatedOn(LocalDateTime.now());
         commentEntity.setUpdateOn(LocalDateTime.now());
 
@@ -63,4 +65,13 @@ public class CommentService {
         return commentRepository.findAll();
     }
 
+    public List<CommentResponseByEvent> findCommentByEventId(long eventId) {
+        List<CommentEntity> commentEntities = commentRepository.findAllByEventId(eventId);
+        return commentEntities.stream()
+                .map(comment -> {
+                    CommentResponseByEvent commentResponseByEvent = new CommentResponseByEvent(comment.getCreatedBy().getUsername(),
+                            comment.getContent());
+                    return commentResponseByEvent;
+                }).collect(Collectors.toList());
+    }
 }

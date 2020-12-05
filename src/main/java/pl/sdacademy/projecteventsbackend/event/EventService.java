@@ -153,7 +153,7 @@ public class EventService {
             throw new EventNameNotFoundException();//TODO change exception
         }
 
-        UserEntity guest = userRepository.findUserEntityByMail(mail).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        UserEntity guest = userRepository.findUserEntityByMail(mail).orElseThrow(() -> new UsernameNotFoundException("User not found")); // orElse
 
 
         String name = guest.getUsername();
